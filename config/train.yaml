@@ -1,14 +1,12 @@
 seed: 42
 
-seed: 42
-
 trainer:
   accelerator: gpu
   max_epochs: 100
   precision: "16-mixed"
   log_every_n_steps: 20
   deterministic: true
-  strategy: "ddp_find_unused_parameters_true"
+  strategy: "ddp"
 
 data:
   root_dir: /kaggle/input/crackvarious/CRACKVARIOUS
@@ -25,6 +23,13 @@ checkpoint:
   mode: max
   save_top_k: 1
   save_last: True
+
+early_stopping:
+  monitor: val_loss
+  mode: min
+  patience: 5
+  verbose: true
+
 
 system:
   cudnn_benchmark: true
