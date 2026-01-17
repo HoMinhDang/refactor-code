@@ -12,6 +12,7 @@ data:
   root_dir: /kaggle/input/crackvarious/CRACKVARIOUS
   img_size: [256, 256]
   batch_size: 16
+  num_workers: 4
 
 logger:
   save_dir: logs
