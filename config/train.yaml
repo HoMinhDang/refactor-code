@@ -1,0 +1,36 @@
+seed: 42
+
+trainer:
+  accelerator: gpu
+  devices: 1
+  max_epochs: 100
+  precision: 16
+  log_every_n_steps: 20
+  deterministic: true
+
+data:
+  root_dir: data/crack
+  img_size: [256, 256]
+  batch_size: 16
+
+logger:
+  save_dir: logs
+  name: cafnet
+  version: baseline
+
+checkpoint:
+  monitor: val_iou
+  mode: max
+  save_top_k: 1
+  save_last: True
+
+system:
+  cudnn_benchmark: true
+  matmul_precision: high
+
+optim:
+  lr: 1e-3
+  weight_decay: 1e-4
+
+model:
+  selected: cafnet

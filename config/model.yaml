@@ -1,0 +1,12 @@
+cafnet:
+  name: cafnet
+  hparams:
+    in_channels: 3
+    embed_dims: [64, 64, 128, 256]
+    num_heads: [1, 2, 4, 8]
+    mlp_ratios: [4, 4, 4, 4]
+    reduction_ratios: [8, 4, 2, 1]
+    depths: [2, 2, 2, 2]
+    crackam: true
+    crackspam: true
+    attn_gate: true

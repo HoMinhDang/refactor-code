@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual env
+venv/
+.venv/
+.env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ML outputs
+logs/
+runs/
+checkpoints/
+wandb/
+
+# Data & weights
+data/
+*.pt
+*.pth
+*.ckpt
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
