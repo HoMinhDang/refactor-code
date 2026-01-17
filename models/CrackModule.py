@@ -80,7 +80,7 @@ class CrackModule(pl.LightningModule):
             },
             on_epoch=True,
             on_step=False,
-            prog_bar=True,
+            prog_bar=False,
             sync_dist=True
         )
         
@@ -92,14 +92,22 @@ class CrackModule(pl.LightningModule):
         f1 = self.f1(preds, masks)
         iou = self.iou(preds, masks)
         
-        self.log_dict({
-            "val_loss": loss,
-            "val_f1": f1,
-            "val_iou": iou 
-            },
-            on_epoch=True,
+        self.log(
+            "val_loss",
+            loss,
             on_step=False,
+            on_epoch=True,
             prog_bar=True,
+            sync_dist=True
+        )
+        self.log_dict(
+            {
+                "val_f1": f1,
+                "val_iou": iou,
+            },
+            on_step=False,
+            on_epoch=True,
+            prog_bar=False,
             sync_dist=True
         )
         
