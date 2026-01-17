@@ -79,6 +79,7 @@ class CrackModule(pl.LightningModule):
             "train_iou": iou 
             },
             on_epoch=True,
+            on_step=False,
             prog_bar=True,
             sync_dist=True
         )
@@ -97,6 +98,7 @@ class CrackModule(pl.LightningModule):
             "val_iou": iou 
             },
             on_epoch=True,
+            on_step=False,
             prog_bar=True,
             sync_dist=True
         )
