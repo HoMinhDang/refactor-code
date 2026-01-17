@@ -1,11 +1,5 @@
-import os
-import sys
-PROJECT_ROOT = os.path.abspath(os.path.join(os.getcwd(), '..'))
-if PROJECT_ROOT not in sys.path:
-    sys.path.append(PROJECT_ROOT)
-    
 import torch
-import torch.nn as nn
+from torch import nn
 import pytorch_lightning as pl
 from torchmetrics.classification import BinaryAccuracy, BinaryF1Score, BinaryJaccardIndex, BinaryPrecision, BinaryRecall
 from .registry import MODEL_REGISTRY
@@ -85,7 +79,8 @@ class CrackModule(pl.LightningModule):
             "train_iou": iou 
             },
             on_epoch=True,
-            prog_bar=True
+            prog_bar=True,
+            sync_dist=True
         )
         
         return loss
@@ -102,7 +97,8 @@ class CrackModule(pl.LightningModule):
             "val_iou": iou 
             },
             on_epoch=True,
-            prog_bar=True
+            prog_bar=True,
+            sync_dist=True
         )
         
     
@@ -124,7 +120,8 @@ class CrackModule(pl.LightningModule):
             "test_f1": f1,
             "test_iou": iou
             },
-            on_epoch=True
+            on_epoch=True,
+            prog_bar=True
         )
     
     def predict_step(self, batch, batch_idx):
