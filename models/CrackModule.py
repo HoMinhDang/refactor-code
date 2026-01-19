@@ -4,6 +4,7 @@ import pytorch_lightning as pl
 from torchmetrics.classification import BinaryAccuracy, BinaryF1Score, BinaryJaccardIndex, BinaryPrecision, BinaryRecall
 from .registry import MODEL_REGISTRY
 from .proposed import CrackAwareFusionNet
+from .CAFNet_mbnv3l import CAFNet_MBNV3L
 from utils.metric import DiceBCELoss
 
 
