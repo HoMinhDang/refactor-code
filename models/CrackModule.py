@@ -99,7 +99,8 @@ class CrackModule(pl.LightningModule):
             on_step=False,
             on_epoch=True,
             prog_bar=True,
-            sync_dist=True
+            sync_dist=True,
+            rank_zero_only=True
         )
         self.log_dict(
             {
@@ -132,7 +133,8 @@ class CrackModule(pl.LightningModule):
             "test_iou": iou
             },
             on_epoch=True,
-            prog_bar=True
+            prog_bar=True,
+            sync_dist=True
         )
     
     def predict_step(self, batch, batch_idx):
