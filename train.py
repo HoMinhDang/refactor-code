@@ -3,6 +3,7 @@ import pytorch_lightning as pl
 
 from pathlib import Path
 from omegaconf import OmegaConf
+from omegaconf import DictConfig
 
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import (
@@ -60,7 +61,7 @@ def main():
     progress_bar = TQDMProgressBar(refresh_rate=10)
 
     # =========================
-    # TRAINER (TRAIN)
+    # TRAINER
     # =========================
     trainer = pl.Trainer(
         **cfg.trainer,
@@ -69,9 +70,9 @@ def main():
             checkpoint_cb,
             early_stop_cb,
             lr_monitor,
-            progress_bar
+            progress_bar,
         ],
-        enable_progress_bar=True
+        enable_progress_bar=True,
     )
 
     # =========================
@@ -80,50 +81,29 @@ def main():
     trainer.fit(model, datamodule=datamodule)
 
     # =========================
-    # BEST CHECKPOINT
+    # PRINT BEST CHECKPOINT
     # =========================
-    best_ckpt = checkpoint_cb.best_model_path
-
-    print("\nBest checkpoint:")
-    print(best_ckpt)
-
-    # =========================
-    # EXPORT BEST WEIGHTS (.pth)
-    # =========================
-    best_model = CrackModule.load_from_checkpoint(best_ckpt)
-
-    pth_path = best_ckpt.replace(".ckpt", ".pth")
-
-    torch.save(best_model.model.state_dict(), pth_path)
-
-    print("Saved weights:", pth_path)
-
-    # =========================
-    # EVALUATION TRAINER
-    # =========================
-    eval_trainer = pl.Trainer(
-        accelerator="gpu",
-        devices=1,
-        precision=cfg.trainer.precision,
-        logger=False
-    )
+    if trainer.global_rank == 0:
+        print("\nBest checkpoint:")
+        print(checkpoint_cb.best_model_path)
 
     # =========================
     # VALIDATE BEST MODEL
     # =========================
-    eval_trainer.validate(
-        best_model,
-        datamodule=datamodule
+    trainer.validate(
+        datamodule=datamodule,
+        ckpt_path=checkpoint_cb.best_model_path,
+        weights_only=False
     )
 
     # =========================
     # TEST BEST MODEL
     # =========================
-    eval_trainer.test(
-        best_model,
-        datamodule=datamodule
+    trainer.test(
+        datamodule=datamodule,
+        ckpt_path=checkpoint_cb.best_model_path,
+        weights_only=False
     )
-
 
 if __name__ == "__main__":
     main()
