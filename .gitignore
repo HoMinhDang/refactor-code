@@ -16,12 +16,6 @@ runs/
 checkpoints/
 wandb/
 
-# Data & weights
-data/
-*.pt
-*.pth
-*.ckpt
-
 # IDE / OS
 .vscode/
 .idea/
