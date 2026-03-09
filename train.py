@@ -1,36 +1,56 @@
+import torch
+import pytorch_lightning as pl
+
+from pathlib import Path
+from omegaconf import OmegaConf
+
+from pytorch_lightning.loggers import TensorBoardLogger
+from pytorch_lightning.callbacks import (
+    ModelCheckpoint,
+    EarlyStopping,
+    LearningRateMonitor,
+    TQDMProgressBar
+)
+
 from models.CrackModule import CrackModule
 from data.pldatamodule import CrackDataModule
-from omegaconf import OmegaConf
-from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor, EarlyStopping, TQDMProgressBar
-from pytorch_lightning.loggers import TensorBoardLogger
-import pytorch_lightning as pl
-from pathlib import Path
+
 
 def main():
 
+    # =========================
+    # LOAD CONFIG
+    # =========================
     BASE_DIR = Path(__file__).resolve().parent
 
     cfg = OmegaConf.load(BASE_DIR / "config" / "train.yaml")
     cfg_model = OmegaConf.load(BASE_DIR / "config" / "model.yaml")
 
-    # chọn model
     selected_model = cfg.model.selected
     model_info = cfg_model[selected_model]
 
-    # datamodule
+    # =========================
+    # DATA
+    # =========================
     datamodule = CrackDataModule(**cfg.data)
 
-    # model
+    # =========================
+    # MODEL
+    # =========================
     model = CrackModule(
         model_info.name,
         model_info.hparams,
         **cfg.optim
     )
 
-    # logger
+    # =========================
+    # LOGGER
+    # =========================
     logger = TensorBoardLogger(**cfg.logger)
 
-    # callbacks
+    # =========================
+    # CALLBACKS
+    # =========================
     checkpoint_cb = ModelCheckpoint(**cfg.checkpoint)
 
     early_stop_cb = EarlyStopping(**cfg.early_stopping)
@@ -39,7 +59,9 @@ def main():
 
     progress_bar = TQDMProgressBar(refresh_rate=10)
 
-    # trainer for training
+    # =========================
+    # TRAINER (TRAIN)
+    # =========================
     trainer = pl.Trainer(
         **cfg.trainer,
         logger=logger,
@@ -52,19 +74,33 @@ def main():
         enable_progress_bar=True
     )
 
-    # ====================
+    # =========================
     # TRAIN
-    # ====================
-
+    # =========================
     trainer.fit(model, datamodule=datamodule)
 
+    # =========================
+    # BEST CHECKPOINT
+    # =========================
+    best_ckpt = checkpoint_cb.best_model_path
+
     print("\nBest checkpoint:")
-    print(checkpoint_cb.best_model_path)
+    print(best_ckpt)
 
-    # ====================
-    # EVALUATION (single GPU for correct metrics)
-    # ====================
+    # =========================
+    # EXPORT BEST WEIGHTS (.pth)
+    # =========================
+    best_model = CrackModule.load_from_checkpoint(best_ckpt)
 
+    pth_path = best_ckpt.replace(".ckpt", ".pth")
+
+    torch.save(best_model.model.state_dict(), pth_path)
+
+    print("Saved weights:", pth_path)
+
+    # =========================
+    # EVALUATION TRAINER
+    # =========================
     eval_trainer = pl.Trainer(
         accelerator="gpu",
         devices=1,
@@ -72,19 +108,22 @@ def main():
         logger=False
     )
 
-    # validate best model
+    # =========================
+    # VALIDATE BEST MODEL
+    # =========================
     eval_trainer.validate(
-        model,
-        datamodule=datamodule,
-        ckpt_path=checkpoint_cb.best_model_path
+        best_model,
+        datamodule=datamodule
     )
 
-    # test best model
+    # =========================
+    # TEST BEST MODEL
+    # =========================
     eval_trainer.test(
-        model,
-        datamodule=datamodule,
-        ckpt_path=checkpoint_cb.best_model_path
+        best_model,
+        datamodule=datamodule
     )
+
 
 if __name__ == "__main__":
     main()
