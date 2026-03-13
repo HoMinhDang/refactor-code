@@ -5,6 +5,7 @@ from torchmetrics.classification import BinaryAccuracy, BinaryF1Score, BinaryJac
 from .registry import MODEL_REGISTRY
 from .proposed import CrackAwareFusionNet
 from .CAFNet_mbnv3l import CAFNet_MBNV3L
+from .DTrcNet import CTCNet
 from utils.metric import DiceBCELoss
 
 

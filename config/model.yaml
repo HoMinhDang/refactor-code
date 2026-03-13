@@ -23,3 +23,9 @@ cafnet_mbnv3l:
     crackam: true
     crackspam: true
     attn_gate: true
+
+dtrcnet:
+  name: dtrcnet
+  hparams:
+    n_channels: 3
+    n_classes: 1
