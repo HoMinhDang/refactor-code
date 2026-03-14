@@ -8,3 +8,4 @@ matplotlib>=3.4.0
 einops>=0.8.1
 pytorch-lightning>=2.6.0
 omegaconf
+segmentation-models-pytorch

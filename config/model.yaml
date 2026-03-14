@@ -29,3 +29,18 @@ dtrcnet:
   hparams:
     n_channels: 3
     n_classes: 1
+
+unet:
+  name: unet
+  hparams:
+    encoder_name: "resnet18"
+    encoder_weights: "imagenet"
+    in_channels: 3
+    classes: 1
+
+hrsegnet:
+  name: hrsegnet
+  hparams:
+    in_channels: 3
+    base: 32
+    num_classes: 1

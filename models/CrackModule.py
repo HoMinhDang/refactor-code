@@ -6,6 +6,8 @@ from .registry import MODEL_REGISTRY
 from .proposed import CrackAwareFusionNet
 from .CAFNet_mbnv3l import CAFNet_MBNV3L
 from .DTrcNet import CTCNet
+from .unet import Unet
+from .hrsegnet import HrSegNet
 from utils.metric import DiceBCELoss
 
 
