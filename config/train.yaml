@@ -5,8 +5,8 @@ trainer:
   max_epochs: 100
   precision: "16-mixed"
   log_every_n_steps: 20
-  deterministic: true
-  strategy: "ddp"
+  deterministic: false
+  strategy: "ddp_find_unused_parameters_true"
 
 data:
   root_dir: /kaggle/input/crackvarious/CRACKVARIOUS

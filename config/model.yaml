@@ -44,3 +44,38 @@ hrsegnet:
     in_channels: 3
     base: 32
     num_classes: 1
+
+segformer:
+  name: "segformer"
+  hparams:
+    encoder_name: "mit_b1"      
+    encoder_weights: "imagenet"
+    in_channels: 3
+    classes: 1
+
+segnet:
+  name: "segnet"
+  hparams:
+    encoder_name: "resnet18"   
+    encoder_weights: "imagenet"
+    in_channels: 3
+    classes: 1
+
+deeplabv3plus:
+  name: "deeplabv3plus"
+  hparams:
+    encoder_name: "resnet50"   # DeepLabV3+ thường chạy rất tốt với ResNet hoặc ResNeXt
+    encoder_weights: "imagenet"
+    in_channels: 3
+    classes: 1
+
+dcsnet:
+  name: "dcsnet"
+  hparams:
+    nclass: 1
+    mode: 'train'
+
+hacnetv2:
+  name: "hacnetv2"
+  hparams:
+    channels: 32
