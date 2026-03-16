@@ -13,6 +13,7 @@ class CrackDataModule(pl.LightningDataModule):
         self.img_size = img_size
         self.num_workers = num_workers
 
+        # Chỉ số Normalize (Mean và Std) cho ảnh
         mu = [0.51789941, 0.51360926, 0.547762]
         std = [0.1812099, 0.17746663, 0.20386334]
 
@@ -23,6 +24,7 @@ class CrackDataModule(pl.LightningDataModule):
         ])
 
     def setup(self, stage=None):
+        # Thiết lập cho giai đoạn training và validation
         if stage == "fit" or stage is None:
             self.train_dataset = CrackDataset(
                 os.path.join(self.root_dir, "train/IMG"),
@@ -35,7 +37,8 @@ class CrackDataModule(pl.LightningDataModule):
                 self.transform,
             )
 
-        if stage == "test" or stage is None:
+        # Thiết lập cho giai đoạn testing hoặc prediction (dùng chung tập test)
+        if stage in ["test", "predict"] or stage is None:
             self.test_dataset = CrackDataset(
                 os.path.join(self.root_dir, "test/IMG"),
                 os.path.join(self.root_dir, "test/GT"),
@@ -61,6 +64,16 @@ class CrackDataModule(pl.LightningDataModule):
         )
 
     def test_dataloader(self):
+        return DataLoader(
+            self.test_dataset,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+            pin_memory=True,
+        )
+
+    def predict_dataloader(self):
+        # Tái sử dụng test_dataset cho mục đích dự đoán (Inference)
         return DataLoader(
             self.test_dataset,
             batch_size=self.batch_size,
