@@ -145,11 +145,13 @@ class CrackModule(pl.LightningModule):
             sync_dist=True
         )
     
-    def predict_step(self, batch, batch_idx):
-        imgs = batch
+    def predict_step(self, batch, batch_idx, dataloader_idx=0):
+        imgs, masks, filenames = batch 
         logits = self(imgs)
+        if isinstance(logits, (tuple, list)):
+            logits = logits[0]
         probs = torch.sigmoid(logits)
-        preds = (preds > 0.5).float()
+        preds = (probs > 0.5).float() 
         return preds
 
 def create_model(model_name: str, **model_params):
