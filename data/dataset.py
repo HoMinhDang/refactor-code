@@ -14,11 +14,16 @@ class CrackDataset(Dataset):
         return len(self.img_names)
 
     def __getitem__(self, idx):
-        img_path = os.path.join(self.img_dir, self.img_names[idx])
-        mask_path = os.path.join(self.mask_dir, self.img_names[idx])
+        # Lấy tên file gốc
+        img_name = self.img_names[idx]
+        
+        img_path = os.path.join(self.img_dir, img_name)
+        mask_path = os.path.join(self.mask_dir, img_name)
 
         img = np.array(Image.open(img_path).convert("RGB"))
         mask = np.array(Image.open(mask_path).convert("L"), dtype=np.float32)
+        
+        # Chuyển đổi label: 255 (trắng) thành 1.0 (mask)
         mask[mask == 255.0] = 1.0          
 
         if self.transform:
@@ -26,4 +31,5 @@ class CrackDataset(Dataset):
             img = augmented['image']
             mask = augmented['mask']
 
-        return img, mask
+        # TRẢ VỀ: (ảnh, mask, tên_file)
+        return img, mask, img_name
