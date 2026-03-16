@@ -61,7 +61,7 @@ class CrackModule(pl.LightningModule):
         }
     
     def _common_step(self, batch, batch_idx):
-        imgs, masks = batch
+        imgs, masks, filenames = batch
         masks = masks.float().unsqueeze(1)   # [B, 1, H, W]
 
         logits = self(imgs)
