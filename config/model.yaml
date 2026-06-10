@@ -9,7 +9,7 @@ cafnet:
     depths: [2, 2, 2, 2]
     crackam: true
     crackspam: true
-    attn_gate: true
+    attn_gate: false
 
 cafnet_mbnv3l:
   name: cafnet_mbnv3l
@@ -22,7 +22,7 @@ cafnet_mbnv3l:
     depths: [2, 2, 2, 2]
     crackam: true
     crackspam: true
-    attn_gate: true
+    attn_gate: false
 
 dtrcnet:
   name: dtrcnet
