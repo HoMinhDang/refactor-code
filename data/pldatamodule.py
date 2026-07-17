@@ -6,12 +6,14 @@ from torch.utils.data import DataLoader
 import os
 
 class CrackDataModule(pl.LightningDataModule):
-    def __init__(self, root_dir, img_size=(256, 256), batch_size=16, num_workers=4):
+    def __init__(self, root_dir, img_size=(256, 256), batch_size=16, num_workers=4,
+                 enable_contrastive=False):
         super().__init__()
         self.root_dir = root_dir
         self.batch_size = batch_size
         self.img_size = img_size
         self.num_workers = num_workers
+        self.enable_contrastive = enable_contrastive
 
         mu = [0.51789941, 0.51360926, 0.547762]
         std = [0.1812099, 0.17746663, 0.20386334]
@@ -55,9 +57,9 @@ class CrackDataModule(pl.LightningDataModule):
                 os.path.join(self.root_dir, "train/IMG"),
                 os.path.join(self.root_dir, "train/GT"),
                 self.base_transform,
-                self.perturbation_transform,
+                self.perturbation_transform if self.enable_contrastive else None,
                 self.tensor_transform,
-                is_training=True
+                contrastive=self.enable_contrastive
             )
             self.val_dataset = CrackDataset(
                 os.path.join(self.root_dir, "val/IMG"),
@@ -65,7 +67,7 @@ class CrackDataModule(pl.LightningDataModule):
                 self.base_transform,
                 None,
                 self.tensor_transform,
-                is_training=False
+                contrastive=False
             )
 
         if stage in ["test", "predict"] or stage is None:
@@ -75,7 +77,7 @@ class CrackDataModule(pl.LightningDataModule):
                 self.base_transform,
                 None,
                 self.tensor_transform,
-                is_training=False
+                contrastive=False
             )
 
     def train_dataloader(self):

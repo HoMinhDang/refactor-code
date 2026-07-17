@@ -135,7 +135,7 @@ class CrackModule(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         if self.lambda_c > 0:
-            return self._training_step_cl(batch)
+            return self._training_step_contrastive(batch)
         else:
             loss, preds, masks = self._forward_pass(batch)
             self.train_metrics.update(preds, masks.int())
@@ -143,7 +143,7 @@ class CrackModule(pl.LightningModule):
             self.log_dict(self.train_metrics, on_step=False, on_epoch=True, prog_bar=False, sync_dist=True)
             return loss
 
-    def _training_step_cl(self, batch):
+    def _training_step_contrastive(self, batch):
         img_clean, img_pert, masks, filenames = batch
         if len(masks.shape) == 3:
             masks = masks.float().unsqueeze(1)

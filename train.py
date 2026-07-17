@@ -33,7 +33,8 @@ def main():
     # =========================
     # DATA
     # =========================
-    datamodule = CrackDataModule(**cfg.data)
+    datamodule = CrackDataModule(**cfg.data,
+                                  enable_contrastive=(cfg.optim.get("lambda_c", 0) > 0))
 
     # =========================
     # MODEL

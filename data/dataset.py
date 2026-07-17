@@ -6,13 +6,13 @@ import torch
 
 class CrackDataset(Dataset):
     def __init__(self, img_dir, mask_dir, base_transform=None, pert_transform=None,
-                 tensor_transform=None, is_training=False):
+                 tensor_transform=None, contrastive=False):
         self.img_dir = img_dir
         self.mask_dir = mask_dir
         self.base_transform = base_transform
         self.pert_transform = pert_transform
         self.tensor_transform = tensor_transform
-        self.is_training = is_training
+        self.contrastive = contrastive
         self.img_names = os.listdir(img_dir)
 
     def __len__(self):
@@ -40,7 +40,7 @@ class CrackDataset(Dataset):
         if len(mask.shape) == 2:
             mask = mask.unsqueeze(0)
 
-        if self.is_training and self.pert_transform:
+        if self.contrastive and self.pert_transform:
             img_pert = self.pert_transform(image=img_clean)['image']
             if self.tensor_transform:
                 img_clean = self.tensor_transform(image=img_clean)['image']
