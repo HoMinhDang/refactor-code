@@ -7,14 +7,6 @@ from torchmetrics import MetricCollection
 from .registry import MODEL_REGISTRY
 from .CAFNet_resnet18 import CrackAwareFusionNet
 from .CAFNet_mbnv3l import CAFNet_MBNV3L
-from .DTrcNet import CTCNet
-from .unet import Unet
-from .hrsegnet import HrSegNet
-from .segformer import SegFormer
-from .deeplabv3plus import DeepLabV3Plus
-from .segnet import SegNet
-from .dcsnet import DcsNet
-from .hacnetv2 import hacnetv2
 from utils.metric import DiceBCELoss
 
 
