@@ -41,4 +41,4 @@ optim:
   weight_decay: 1e-5
 
 model:
-  selected: cafnet
+  selected: cafnet_resnet18

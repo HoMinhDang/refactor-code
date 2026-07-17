@@ -5,7 +5,7 @@ from .ResNet import ResNetEncoder
 from .decoder import CrackAwareBiFusionModule, Upsample, Conv
 from .registry import register_model
 
-@register_model("cafnet")
+@register_model("cafnet_resnet18")
 class CrackAwareFusionNet(nn.Module):
     def __init__(
         self,

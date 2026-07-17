@@ -1,5 +1,5 @@
-cafnet:
-  name: cafnet
+cafnet_resnet18:
+  name: cafnet_resnet18
   hparams:
     in_channels: 3
     embed_dims: [64, 64, 128, 256]

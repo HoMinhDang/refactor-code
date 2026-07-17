@@ -3,7 +3,7 @@ from torch import nn
 import pytorch_lightning as pl
 from torchmetrics.classification import BinaryAccuracy, BinaryF1Score, BinaryJaccardIndex, BinaryPrecision, BinaryRecall
 from .registry import MODEL_REGISTRY
-from .proposed import CrackAwareFusionNet
+from .CAFNet_resnet18 import CrackAwareFusionNet
 from .CAFNet_mbnv3l import CAFNet_MBNV3L
 from .DTrcNet import CTCNet
 from .unet import Unet
