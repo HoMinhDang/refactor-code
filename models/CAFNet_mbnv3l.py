@@ -64,6 +64,6 @@ class CAFNet_MBNV3L(nn.Module):
         d1 = self.up1(d2, x_skip=None)
 
         out = self.final(d1)
-        return out, d1, d2, d3, d4, d5
+        return out, (d3, d4)
 
 

@@ -13,36 +13,69 @@ class CrackDataModule(pl.LightningDataModule):
         self.img_size = img_size
         self.num_workers = num_workers
 
-        # Chỉ số Normalize (Mean và Std) cho ảnh
         mu = [0.51789941, 0.51360926, 0.547762]
         std = [0.1812099, 0.17746663, 0.20386334]
 
-        self.transform = A.Compose([
+        self.base_transform = A.Compose([
             A.Resize(img_size[0], img_size[1]),
+        ])
+
+        self.perturbation_transform = A.Compose([
+            A.OneOf([
+                A.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.1, p=1.0),
+                A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=1.0),
+                A.CLAHE(clip_limit=4.0, tile_grid_size=(8, 8), p=1.0),
+            ], p=0.8),
+            A.OneOf([
+                A.GaussNoise(p=1.0),
+                A.ISONoise(p=1.0),
+                A.ImageCompression(quality_lower=60, quality_upper=100, p=1.0),
+            ], p=0.5),
+            A.OneOf([
+                A.GaussianBlur(blur_limit=(3, 7), p=1.0),
+                A.MotionBlur(blur_limit=5, p=1.0),
+            ], p=0.3),
+            A.CoarseDropout(
+                num_holes_range=(1, 8),
+                hole_height_range=(1, 32),
+                hole_width_range=(1, 32),
+                fill=0,
+                p=0.5
+            ),
+        ])
+
+        self.tensor_transform = A.Compose([
             A.Normalize(mean=mu, std=std),
             ToTensorV2(),
         ])
 
     def setup(self, stage=None):
-        # Thiết lập cho giai đoạn training và validation
         if stage == "fit" or stage is None:
             self.train_dataset = CrackDataset(
                 os.path.join(self.root_dir, "train/IMG"),
                 os.path.join(self.root_dir, "train/GT"),
-                self.transform,
+                self.base_transform,
+                self.perturbation_transform,
+                self.tensor_transform,
+                is_training=True
             )
             self.val_dataset = CrackDataset(
                 os.path.join(self.root_dir, "val/IMG"),
                 os.path.join(self.root_dir, "val/GT"),
-                self.transform,
+                self.base_transform,
+                None,
+                self.tensor_transform,
+                is_training=False
             )
 
-        # Thiết lập cho giai đoạn testing hoặc prediction (dùng chung tập test)
         if stage in ["test", "predict"] or stage is None:
             self.test_dataset = CrackDataset(
                 os.path.join(self.root_dir, "test/IMG"),
                 os.path.join(self.root_dir, "test/GT"),
-                self.transform,
+                self.base_transform,
+                None,
+                self.tensor_transform,
+                is_training=False
             )
 
     def train_dataloader(self):
@@ -73,7 +106,6 @@ class CrackDataModule(pl.LightningDataModule):
         )
 
     def predict_dataloader(self):
-        # Tái sử dụng test_dataset cho mục đích dự đoán (Inference)
         return DataLoader(
             self.test_dataset,
             batch_size=self.batch_size,

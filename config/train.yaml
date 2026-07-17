@@ -37,8 +37,11 @@ system:
   matmul_precision: high
 
 optim:
-  lr: 1e-4
+  lr: 2e-4
   weight_decay: 1e-5
+  lambda_c: 0
+  temperature: 0.1
+  contra_layer: "both"
 
 model:
   selected: cafnet_resnet18

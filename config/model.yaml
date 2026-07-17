@@ -64,7 +64,7 @@ segnet:
 deeplabv3plus:
   name: "deeplabv3plus"
   hparams:
-    encoder_name: "resnet50"   # DeepLabV3+ thường chạy rất tốt với ResNet hoặc ResNeXt
+    encoder_name: "resnet18"   
     encoder_weights: "imagenet"
     in_channels: 3
     classes: 1
