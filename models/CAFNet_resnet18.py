@@ -1,4 +1,3 @@
-import torch
 from torch import nn
 from .MiT import MiT
 from .ResNet import ResNetEncoder
@@ -18,11 +17,8 @@ class CrackAwareFusionNet(nn.Module):
         crackam=True,
         crackspam=True,
         attn_gate=True,
-        mode = "fusion"
     ):
         super().__init__()
-        
-        self.mode = mode
         
         self.mit = MiT(
             in_channels=in_channels,
@@ -63,90 +59,6 @@ class CrackAwareFusionNet(nn.Module):
         d4 = self.up4(d5, fused3)
         d3 = self.up3(d4, fused2)
         d2 = self.up2(d3, fused1)
-        d1 = self.up1(d2, x_skip=None)
-
-        out = self.final(d1)
-        return out, (d3, d4)
-
-
-@register_model("cnn_only")
-class CNNOnlyNet(nn.Module):
-    """CNN encoder only for comparison"""
-    def __init__(
-        self,
-        in_channels=3,
-        attn_gate=True
-    ):
-        super().__init__()
-        
-        self.cnn = ResNetEncoder()
-        
-        self.up5 = Upsample(in_dim=512, skip_dim=256, out_dim=256, attn_gate=attn_gate)
-        self.up4 = Upsample(in_dim=256, skip_dim=128, out_dim=128, attn_gate=attn_gate)
-        self.up3 = Upsample(in_dim=128, skip_dim=64, out_dim=64, attn_gate=attn_gate)
-        self.up2 = Upsample(in_dim=64, skip_dim=64, out_dim=64, attn_gate=attn_gate)
-        self.up1 = Upsample(in_dim=64, skip_dim=0, out_dim=64, attn_gate=False)
-        
-        self.final = nn.Sequential(
-            Conv(in_dim=64, out_dim=8, kernel_size=3, bn=True, relu=True),
-            Conv(in_dim=8, out_dim=1, kernel_size=1, padding=0, bn=False, relu=False)
-        )
-    
-    def forward(self, x):
-        cnn_f = self.cnn(x)
-        
-        d5 = self.up5(cnn_f[4], cnn_f[3])
-        d4 = self.up4(d5, cnn_f[2])
-        d3 = self.up3(d4, cnn_f[1])
-        d2 = self.up2(d3, cnn_f[0])
-        d1 = self.up1(d2, x_skip=None)
-
-        out = self.final(d1)
-        return out, (d3, d4)
-
-
-@register_model("transformer_only")
-class TransformerOnlyNet(nn.Module):
-    """Transformer (MiT) encoder only for comparison"""
-    def __init__(
-        self,
-        in_channels=3,
-        embed_dims=(64, 64, 128, 256),
-        num_heads=(1, 2, 4, 8),
-        mlp_ratios=(4, 4, 4, 4),
-        reduction_ratios=(8, 4, 2, 1),
-        depths=(2, 2, 2, 2),
-        attn_gate=True
-    ):
-        super().__init__()
-        
-        self.mit = MiT(
-            in_channels=in_channels,
-            embed_dims=embed_dims,
-            num_heads=num_heads,
-            mlp_ratios=mlp_ratios,
-            reduction_ratios=reduction_ratios,
-            depths=depths
-        )
-        
-        self.up5 = Upsample(in_dim=256, skip_dim=256, out_dim=256, attn_gate=attn_gate)
-        self.up4 = Upsample(in_dim=256, skip_dim=128, out_dim=128, attn_gate=attn_gate)
-        self.up3 = Upsample(in_dim=128, skip_dim=64, out_dim=64, attn_gate=attn_gate)
-        self.up2 = Upsample(in_dim=64, skip_dim=64, out_dim=64, attn_gate=attn_gate)
-        self.up1 = Upsample(in_dim=64, skip_dim=0, out_dim=64, attn_gate=False)
-        
-        self.final = nn.Sequential(
-            Conv(in_dim=64, out_dim=8, kernel_size=3, bn=True, relu=True),
-            Conv(in_dim=8, out_dim=1, kernel_size=1, padding=0, bn=False, relu=False)
-        )
-    
-    def forward(self, x):
-        mit_f = self.mit(x)
-        
-        d5 = self.up5(mit_f[3], mit_f[3])
-        d4 = self.up4(d5, mit_f[2])
-        d3 = self.up3(d4, mit_f[1])
-        d2 = self.up2(d3, mit_f[0])
         d1 = self.up1(d2, x_skip=None)
 
         out = self.final(d1)

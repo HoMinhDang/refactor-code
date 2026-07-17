@@ -3,7 +3,6 @@ import pytorch_lightning as pl
 
 from pathlib import Path
 from omegaconf import OmegaConf
-from omegaconf import DictConfig
 
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import (

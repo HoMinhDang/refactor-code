@@ -21,7 +21,7 @@ logger:
 
 checkpoint:
   monitor: val_loss
-  mode: max
+  mode: min
   save_top_k: 1
   save_last: True
 

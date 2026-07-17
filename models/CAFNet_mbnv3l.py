@@ -1,7 +1,5 @@
-import torch
 from torch import nn
 from .MiT import MiT
-from .ResNet import ResNetEncoder
 from .mobilenetv3 import MobileNetV3LargeBackbone
 from .decoder import CrackAwareBiFusionModule, Upsample, Conv
 from .registry import register_model
