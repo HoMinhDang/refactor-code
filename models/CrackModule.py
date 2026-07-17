@@ -122,7 +122,7 @@ class CrackModule(pl.LightningModule):
 
     def _forward_pass(self, batch):
         imgs, masks, filenames = batch
-        masks = (masks > 0).float().unsqueeze(1)
+        masks = (masks > 0).float()
 
         logits = self(imgs)
         if isinstance(logits, (tuple, list)):
