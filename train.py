@@ -12,8 +12,8 @@ from pytorch_lightning.callbacks import (
     TQDMProgressBar
 )
 
-from models.CrackModule import CrackModule
-from data.pldatamodule import CrackDataModule
+from models.crack_module import CrackModule
+from data.crack_data_module import CrackDataModule
 
 
 def main():

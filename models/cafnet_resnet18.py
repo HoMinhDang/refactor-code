@@ -1,6 +1,6 @@
 from torch import nn
-from .MiT import MiT
-from .ResNet import ResNetEncoder
+from .mit_encoder import MiT
+from .resnet_encoder import ResNetEncoder
 from .decoder import CrackAwareBiFusionModule, Upsample, Conv
 from .registry import register_model
 

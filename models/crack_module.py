@@ -5,8 +5,8 @@ import pytorch_lightning as pl
 from torchmetrics.classification import BinaryAccuracy, BinaryF1Score, BinaryJaccardIndex, BinaryPrecision, BinaryRecall
 from torchmetrics import MetricCollection
 from .registry import MODEL_REGISTRY
-from .CAFNet_resnet18 import CrackAwareFusionNet
-from .CAFNet_mbnv3l import CAFNet_MBNV3L
+from .cafnet_resnet18 import CrackAwareFusionNet
+from .cafnet_mobilenetv3 import CAFNet_MBNV3L
 from utils.metric import DiceBCELoss
 
 

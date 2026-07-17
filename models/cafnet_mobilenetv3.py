@@ -1,6 +1,6 @@
 from torch import nn
-from .MiT import MiT
-from .mobilenetv3 import MobileNetV3LargeBackbone
+from .mit_encoder import MiT
+from .mobilenet_v3 import MobileNetV3LargeBackbone
 from .decoder import CrackAwareBiFusionModule, Upsample, Conv
 from .registry import register_model
 
